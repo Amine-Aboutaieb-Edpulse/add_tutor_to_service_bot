@@ -1,0 +1,16 @@
+{
+  "name": "puppeteer_clients_credit_cards_update_script",
+  "version": "1.0.0",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "puppeteer": "^23.8.0",
+    "puppeteer-core": "^23.8.0"
+  }
+}
