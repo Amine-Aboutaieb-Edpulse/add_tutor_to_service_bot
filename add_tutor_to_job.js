@@ -72,6 +72,20 @@ const goToPageAndAddTutorToService = async (pptrPage, serviceId, tutorLastName, 
   }
 };
 
+const archiveJob = async (serviceId) => {
+  let response = await fetch(`https://lgshxjbxultdbfbgallu.supabase.co/rest/v1/matching_db?id=eq.${serviceId}`, {
+    method: "PATCH",
+    headers: {
+      apikey:
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxnc2h4amJ4dWx0ZGJmYmdhbGx1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzY4NTQzODIsImV4cCI6MjA1MjQzMDM4Mn0.iHhBr4aIg3qSWthwEkZesc4D3TN7lAtGUhf9tXHDmeM",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      archived: "matched",
+    }),
+  });
+};
+
 const mainRecursiveMethod = async (pptrPage) => {
   let tutorsToAddList = await getDataFromSupabase();
   let listLength = tutorsToAddList.length;
@@ -84,6 +98,9 @@ const mainRecursiveMethod = async (pptrPage) => {
       console.log(`⚙  Adding tutor(${row.tutor_id}, ${last_name} ${first_name}) to service(${row.service_id})`);
       let pptrResponse = await goToPageAndAddTutorToService(pptrPage, row?.service_id, last_name, first_name);
       console.log(pptrResponse);
+      if (pptrResponse.status) {
+        archiveJob(row?.service_id);
+      }
     }
   } else {
     console.log("❌ No rows found");
@@ -99,9 +116,10 @@ const main = async () => {
   if (!wsChromeEndpointUrl) {
     return;
   }
-  const browser = await puppeteer.connect({
+  const browser = await puppeteer.launch({
     browserWSEndpoint: wsChromeEndpointUrl,
     // slowMo: 150,
+    // headless: true,
   });
   const page = await browser.newPage();
   await page.setViewport({ width: 1080, height: 1024 });
